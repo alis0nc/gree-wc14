@@ -94,7 +94,7 @@ class MyController < Controller
             send_flow_mod_add( datapath_id,
                 :match => match,
                 :idle_timeout => 300,
-                :hard_timeout => 300,
+                :hard_timeout => 300
             )
         end
     end
