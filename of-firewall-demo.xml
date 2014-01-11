@@ -1,0 +1,120 @@
+<rspec type="request" generated_by="Flack" generated="2014-01-11T15:23:36Z" xsi:schemaLocation="http://www.protogeni.net/resources/rspec/2 http://www.protogeni.net/resources/rspec/2/request.xsd  " xmlns:flack="http://www.protogeni.net/resources/rspec/ext/flack/1" xmlns:client="http://www.protogeni.net/resources/rspec/ext/client/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.protogeni.net/resources/rspec/2">
+  <node client_id="router" exclusive="true">
+    <sliver_type name="raw-pc">
+      <disk_image name="urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"/>
+    </sliver_type>
+    <interface client_id="router:right">
+      <ip address="10.10.11.2" netmask="255.255.255.0" type="ipv4"/>
+      <flack:interface_info addressBound="true" bound="false"/>
+    </interface>
+    <interface client_id="router:switch">
+      <ip address="10.10.10.2" netmask="255.255.255.0" type="ipv4"/>
+      <flack:interface_info addressBound="true" bound="false"/>
+    </interface>
+    <flack:node_info x="426" y="451" unbound="true"/>
+  </node>
+  <node client_id="switch" exclusive="true">
+    <sliver_type name="raw-pc">
+      <disk_image name="urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"/>
+    </sliver_type>
+    <services>
+      <execute command="cd /tmp/of-topo-setup &amp;&amp; ./switch-setup" shell="sh"/>
+      <install install_path="/" url="http://www.cs.purdue.edu/homes/fahmy/geni/tarballs/openvswitch-1.6.1-F15.tar.gz"/>
+      <install install_path="/opt" url="http://www.cs.purdue.edu/homes/fahmy/geni/tarballs/trema-trema-8e97343-F15.tar.gz"/>
+      <install install_path="/tmp" url="http://www.cs.purdue.edu/homes/fahmy/geni/tarballs/of-topo-setup.tar.gz"/>
+    </services>
+    <interface client_id="switch:router">
+      <ip address="192.168.129.1" netmask="255.255.255.0" type="ipv4"/>
+      <flack:interface_info addressBound="true" bound="false"/>
+    </interface>
+    <interface client_id="switch:left">
+      <ip address="192.168.128.1" netmask="255.255.255.0" type="ipv4"/>
+      <flack:interface_info addressBound="true" bound="false"/>
+    </interface>
+    <flack:node_info x="59" y="379" unbound="true"/>
+  </node>
+  <node client_id="right" exclusive="true">
+    <sliver_type name="emulab-xen">
+      <disk_image name="urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"/>
+    </sliver_type>
+    <interface client_id="right:router">
+      <ip address="10.10.11.1" netmask="255.255.255.0" type="ipv4"/>
+      <flack:interface_info addressBound="false" bound="false"/>
+    </interface>
+    <flack:node_info x="519" y="197" unbound="true"/>
+  </node>
+  <node client_id="left1" exclusive="false">
+    <sliver_type name="emulab-xen">
+      <disk_image name="urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"/>
+    </sliver_type>
+    <services>
+      <execute command="cd /tmp/of-topo-setup &amp;&amp; ./left-setup" shell="sh"/>
+      <install install_path="/tmp" url="http://www.cs.purdue.edu/homes/fahmy/geni/tarballs/of-topo-setup.tar.gz"/>
+    </services>
+    <interface client_id="left:switch">
+      <ip address="10.10.10.10" netmask="255.255.255.0" type="ipv4"/>
+      <flack:interface_info addressBound="false" bound="false"/>
+    </interface>
+    <flack:node_info x="83" y="112" unbound="true"/>
+  </node>
+  <node client_id="left2" exclusive="false">
+    <sliver_type name="emulab-xen">
+      <disk_image name="urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"/>
+    </sliver_type>
+    <services>
+      <execute command="cd /tmp/of-topo-setup &amp;&amp; ./left-setup" shell="sh"/>
+      <install install_path="/tmp" url="http://www.cs.purdue.edu/homes/fahmy/geni/tarballs/of-topo-setup.tar.gz"/>
+    </services>
+    <interface client_id="left2:if0">
+      <ip address="10.10.10.20" netmask="255.255.255.0" type=""/>
+      <flack:interface_info addressBound="true" bound="false"/>
+    </interface>
+    <flack:node_info x="152" y="159" unbound="true"/>
+  </node>
+  <node client_id="left3" exclusive="false">
+    <sliver_type name="emulab-xen">
+      <disk_image name="urn:publicid:IDN+emulab.net+image+emulab-ops:FEDORA15-STD"/>
+    </sliver_type>
+    <services>
+      <execute command="cd /tmp/of-topo-setup &amp;&amp; ./left-setup" shell="sh"/>
+      <install install_path="/tmp" url="http://www.cs.purdue.edu/homes/fahmy/geni/tarballs/of-topo-setup.tar.gz"/>
+    </services>
+    <interface client_id="left3:if0">
+      <ip address="10.10.10.30" netmask="255.255.255.0" type=""/>
+      <flack:interface_info addressBound="true" bound="false"/>
+    </interface>
+    <flack:node_info x="214" y="234" unbound="true"/>
+  </node>
+  <link client_id="switch-router">
+    <component_manager name="urn:publicid:IDN+emulab.net+authority+cm"/>
+    <interface_ref client_id="router:switch"/>
+    <interface_ref client_id="switch:router"/>
+    <flack:link_info x="-1" y="-1" unboundVlantag="true"/>
+  </link>
+  <link client_id="left-switch">
+    <component_manager name="urn:publicid:IDN+emulab.net+authority+cm"/>
+    <interface_ref client_id="left:switch"/>
+    <interface_ref client_id="switch:left"/>
+    <interface_ref client_id="left2:if0"/>
+    <interface_ref client_id="left3:if0"/>
+    <property source_id="left:switch" dest_id="switch:left" capacity="100000"/>
+    <property source_id="left:switch" dest_id="left2:if0" capacity="100000"/>
+    <property source_id="switch:left" dest_id="left:switch" capacity="100000"/>
+    <property source_id="switch:left" dest_id="left2:if0" capacity="100000"/>
+    <property source_id="left2:if0" dest_id="left:switch" capacity="100000"/>
+    <property source_id="left2:if0" dest_id="switch:left" capacity="100000"/>
+    <property source_id="left:switch" dest_id="left3:if0" capacity="100000"/>
+    <property source_id="switch:left" dest_id="left3:if0" capacity="100000"/>
+    <property source_id="left2:if0" dest_id="left3:if0" capacity="100000"/>
+    <property source_id="left3:if0" dest_id="left:switch" capacity="100000"/>
+    <property source_id="left3:if0" dest_id="switch:left" capacity="100000"/>
+    <property source_id="left3:if0" dest_id="left2:if0" capacity="100000"/>
+    <flack:link_info x="46" y="292" unboundVlantag="true"/>
+  </link>
+  <link client_id="right-router">
+    <component_manager name="urn:publicid:IDN+emulab.net+authority+cm"/>
+    <interface_ref client_id="right:router"/>
+    <interface_ref client_id="router:right"/>
+    <flack:link_info x="-1" y="-1" unboundVlantag="true"/>
+  </link>
+</rspec>
