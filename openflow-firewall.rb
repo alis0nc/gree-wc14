@@ -51,48 +51,6 @@ class MyController < Controller
     # else deny it (drop it)
     ######################
     def packet_in datapath_id, message
-        # SYN flood detection
-        syn_mask = 0x02
-        rst_mask = 0x04
-        fin_mask = 0x01
-        ack_mask = 0x10
-        synhash = {}
-        if message.tcp?
-            # track SYN packets
-            if (message.tcp_flags & syn_mask) and !(message.tcp_flags & ack_mask)
-                # this is a SYN packets; add it to the half-open-connections
-                # hash
-                    synhash["#{message.ipv4_saddr}"] = synhash["#{message.ipv4_saddr}"] + 1 rescue synhash["#{message.ipv4_saddr}"] = 1
-            end
-            if (message.tcp_flags & ack_mask) and !(message.tcp_flags & syn_mask)
-                # this is ACKed and a fully open connection
-                synhash["#{message.ipv4_saddr}"] = synhash["#{message.ipv4_saddr}"] - 1 rescue
-                if synhash.has_key? "#{message.ipv4_saddr}" and synhash["#{message.ipv4_saddr}"] < 0
-                    synhash["#{message.ipv4_saddr}"] = 0
-                end
-            end
-            if (message.tcp_flags & rst_mask)
-                # server has reset the connection
-                synhash["#{message.ipv4_daddr}"] = synhash["#{message.ipv4_daddr}"] - 1 rescue
-                if synhash.has_key? "#{message.ipv4_saddr}" and synhash["#{message.ipv4_saddr}"] < 0
-                    synhash["#{message.ipv4_saddr}"] = 0
-                end
-            end
-        end
-        if synhash.has_key? "#{message.ipv4_saddr}" and synhash["#{message.ipv4_saddr}"] > 42 
-            # This is probably a SYN flood, install a high priority drop rule 
-            # for this host.
-            flooder_match = Match.new(
-                :nw_src => message.ipv4_saddr
-            )
-            info "SYN flood detected: #{flooder_match.to_s}"
-            send_flow_mod_add( datapath_id,
-                :match => flooder_match,
-                :idle_timeout => 300,
-                :hard_timeout => 300,
-                :priority => 0xfffe
-            )
-        end
         match = ExactMatch.from( message )
         action, log = lookup_rules( datapath_id, match )
         info "action=#{ action }, datapath_id=#{ datapath_id.to_hex }, message={#{ match.to_s }}" if log
@@ -103,7 +61,6 @@ class MyController < Controller
                 :match => match,
                 :idle_timeout => 300,
                 :hard_timeout => 300,
-                :priority => 0x7fff,
                 :actions => ActionOutput.new( (match.in_port == 1)? 2 : 1 )
             )
             #set rules in the switch for reverse path
@@ -129,7 +86,6 @@ class MyController < Controller
                 :match => reverse_match,
                 :idle_timeout => 300,
                 :hard_timeout => 300,
-                :priority => 0x7fff,
                 :actions => ActionOutput.new( (reverse_match.in_port == 1)? 2 : 1 )
             )
         else 
